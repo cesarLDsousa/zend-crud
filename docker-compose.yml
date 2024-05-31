@@ -10,6 +10,8 @@ services:
       - .:/var/www/html
     networks:
       - app_network
+    depends_on:
+      - mysql
 
   nginx:
     image: nginx:alpine
@@ -21,7 +23,26 @@ services:
       - "8080:80"
     networks:
       - app_network
+    depends_on:
+      - php
+
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: zend_crud
+      MYSQL_PASSWORD: root
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - app_network
 
 networks:
   app_network:
     driver: bridge
+
+volumes:
+  mysql_data:
